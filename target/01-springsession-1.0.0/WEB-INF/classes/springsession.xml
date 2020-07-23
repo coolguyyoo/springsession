@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--启动spring注解支持由于springsession中会使用到spring的相关注解
+        因此必须要启动注解支持，这个配置是可选配置，通常工作时我们会使用 <context:component-scan base-package="com"/>进行包扫描
+
+    -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com"/>
+    <!--定义springsession的配置Bean，这个Bean将决定springSession将session信息存入redis中-->
+    <bean id="redisHttpSessionConfiguration" class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+        <!--指定cookie的序列化规则对象-->
+        <property name="cookieSerializer" ref="defaultCookieSerializer"/>
+    </bean>
+    <!--配置cookie的许雷华规则的bean-->
+    <bean id="defaultCookieSerializer" class="org.springframework.session.web.http.DefaultCookieSerializer">
+        <!--指定cookie将存放在域名的根路径下，用于实现同域名下的不同项目的session共享-->
+        <property name="cookiePath" value="/"/>
+        <!--支付ingcookie将存放在myweb.com这个根域名下，用于是啊先同根域名不同二级子域名的session共享-->
+        <property name="domainName" value="myweb.com"/>
+    </bean>
+
+    <!-- 配置jedis连接工厂，用于连接redis -->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="192.168.218.128"/>
+        <property name="port" value="6379"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+</beans>
